@@ -1,28 +1,30 @@
-package edu.symbi.aiml2021.platemate;
 import java.io.*;
 import java.util.*;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+// Class definition
 public class DatabaseManager {
+    // Initializing input streams
     static Scanner sc = new Scanner(System.in);
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
     public static void main(String[] args) {
         try {
+            // Get MySQL server username and password from user input
             System.out.println("Enter your MySQL server username: ");
             String username = sc.nextLine();
             System.out.println("Enter your MySQL server password: ");
             String password = sc.nextLine();
 
+            // Create database and table
             DatabaseManager dm = new DatabaseManager();
             dm.createDatabase(username, password);
             dm.createTable(username, password);
 
-
-
+            // Perform menu item management operations
             boolean quit = false;
-
             do {
                 System.out.println("\n1) Add menu item");
                 System.out.println("2) Delete menu item");
@@ -33,6 +35,7 @@ public class DatabaseManager {
 
                 switch (choice) {
                     case 1:
+                        // Get menu item details from user and insert into table
                         System.out.println("Enter item name: ");
                         String name = br.readLine();
                         System.out.println("Enter item price: ");
@@ -51,12 +54,14 @@ public class DatabaseManager {
                         System.out.println("Menu item successfully added. ");
                         break;
                     case 2:
+                        // Get ID of menu item to delete from user and delete it from table
                         System.out.println("Enter id of item to delete: ");
                         int id = Integer.parseInt(br.readLine());
                         dm.deleteRecord(username, password, id);
                         System.out.println("Menu item successfully deleted ");
                         break;
                     case 3:
+                        // Get ID and updated details of menu item from user and update it in table
                         System.out.println("Enter id of item to update: ");
                         id = Integer.parseInt(br.readLine());
                         System.out.println("Enter new item name: ");
@@ -72,17 +77,20 @@ public class DatabaseManager {
                         System.out.println("Menu item successfully updated. ");
                         break;
                     case 4:
+                        // Quit the program
                         quit = true;
                         break;
                 }
-            }
-            while (!quit);
+            } while (!quit);
         }
         catch (InputMismatchException | IOException e) {
+            // Handle invalid input exceptions
             System.out.println("Invalid input");
         }
 
     }
+
+    // Method to create database
     public static void createDatabase(String username, String password) {
         try (java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/", username, password);
              Statement stmt = conn.createStatement()) {
@@ -93,6 +101,7 @@ public class DatabaseManager {
             System.out.println(e.getMessage());
         }
     }
+    // Method to create table
     public static void createTable(String username, String password){
         try (java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/platemate", username, password);
              Statement stmt = conn.createStatement()) {
@@ -110,6 +119,7 @@ public class DatabaseManager {
             System.out.println(e.getMessage());
         }
     }
+    // Method to insert records into the table
     public static void insertRecord(String username, String password, String name, double price, String description, int statusInt) {
         try (java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/platemate",username, password);
              Statement stmt = conn.createStatement()) {
@@ -124,6 +134,7 @@ public class DatabaseManager {
         }
     }
 
+    // Method to delete records
     public static void deleteRecord(String username, String password, int id){
         try (java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/platemate",username, password);
              Statement stmt = conn.createStatement()) {
@@ -136,6 +147,7 @@ public class DatabaseManager {
         }
     }
 
+    // Method to update records
     public static void updateRecord(String username, String password, int id, String name, double price, String description, int statusInt) {
         try (java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/platemate", username, password);
              Statement stmt = conn.createStatement()) {
